@@ -34,9 +34,9 @@ class UserControllerTest {
     @Test
     void validateLoginExceptionTest() throws InvalidUserException {
         final UserController userController = new UserController();
-        final User user = new User(null, "Muha", "Max", "eliseev@bk.ru",  LocalDate.of(1997, 10, 25));
-        final User user1 = new User(null, "eliseev@bk.ru", "  ", "Max", LocalDate.of(1997, 10, 25));
-        final User user2 = new User(null, "eliseev@bk.ru", "Mu ha", "Max", LocalDate.of(1997, 10, 25));
+        final User user = new User(null, "Mu ha", "Max", "eliseev@bk.ru",  LocalDate.of(1997, 10, 25));
+        final User user1 = new User(null, "", "Max", "eliseev@bk.ru", LocalDate.of(1997, 10, 25));
+        final User user2 = new User(null, "  ", "Max", "eliseev@bk.ru", LocalDate.of(1997, 10, 25));
         assertThrows(RuntimeException.class, () -> userController.validate(user));
         assertThrows(RuntimeException.class, () -> userController.validate(user1));
         assertThrows(RuntimeException.class, () -> userController.validate(user2));
