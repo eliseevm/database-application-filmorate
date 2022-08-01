@@ -62,6 +62,7 @@ public class FilmController {
     @GetMapping()
     public List<Film> getAll() {
         List<Film> filmss = new ArrayList<>(films.values());
+        System.out.println(filmss);
         return filmss;
     }
 }
