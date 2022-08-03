@@ -13,7 +13,8 @@ class UserControllerTest {
     @Test
     void validateTest() throws InvalidUserException {
         final UserController userController = new UserController();
-        final User user = new User(null, "Muha", "Max", "eliseev@bk.ru", LocalDate.of(1997, 10, 25));
+        final User user = new User(null, "Muha", "Max", "eliseev@bk.ru"
+                , LocalDate.of(1997, 10, 25));
         userController.create(user);
         assertEquals("Max", userController.getUsers().get(1).getName());
         assertEquals("eliseev@bk.ru", userController.getUsers().get(1).getEmail());
@@ -25,8 +26,10 @@ class UserControllerTest {
     @Test
     void validateEmailExceptionTest() throws InvalidUserException {
         final UserController userController = new UserController();
-        final User user = new User(null, "Muha", "Max", "eliseevbk.ru", LocalDate.of(1997, 10, 25));
-        final User user1 = new User(null, "Muha", "Max", "", LocalDate.of(1997, 10, 25));
+        final User user = new User(null, "Muha", "Max", "eliseevbk.ru"
+                , LocalDate.of(1997, 10, 25));
+        final User user1 = new User(null, "Muha", "Max", ""
+                , LocalDate.of(1997, 10, 25));
         assertThrows(RuntimeException.class, () -> userController.validate(user));
         assertThrows(RuntimeException.class, () -> userController.validate(user1));
     }
@@ -34,9 +37,12 @@ class UserControllerTest {
     @Test
     void validateLoginExceptionTest() throws InvalidUserException {
         final UserController userController = new UserController();
-        final User user = new User(null, "Mu ha", "Max", "eliseev@bk.ru",  LocalDate.of(1997, 10, 25));
-        final User user1 = new User(null, "", "Max", "eliseev@bk.ru", LocalDate.of(1997, 10, 25));
-        final User user2 = new User(null, "  ", "Max", "eliseev@bk.ru", LocalDate.of(1997, 10, 25));
+        final User user = new User(null, "Mu ha", "Max", "eliseev@bk.ru"
+                , LocalDate.of(1997, 10, 25));
+        final User user1 = new User(null, "", "Max", "eliseev@bk.ru"
+                , LocalDate.of(1997, 10, 25));
+        final User user2 = new User(null, "  ", "Max", "eliseev@bk.ru"
+                , LocalDate.of(1997, 10, 25));
         assertThrows(RuntimeException.class, () -> userController.validate(user));
         assertThrows(RuntimeException.class, () -> userController.validate(user1));
         assertThrows(RuntimeException.class, () -> userController.validate(user2));
@@ -45,8 +51,10 @@ class UserControllerTest {
     @Test
     void validateNameExceptionTest() throws InvalidUserException {
         final UserController userController = new UserController();
-        final User user = new User(null , "Muha", "",  "eliseev@bk.ru", LocalDate.of(1997, 10, 25));
-        final User user1 = new User(null, "Muha", " ", "eliseev@bk.ru", LocalDate.of(1997, 10, 25));
+        final User user = new User(null, "Muha", "", "eliseev@bk.ru"
+                , LocalDate.of(1997, 10, 25));
+        final User user1 = new User(null, "Muha", " ", "eliseev@bk.ru"
+                , LocalDate.of(1997, 10, 25));
         userController.create(user);
         userController.create(user1);
         assertEquals("Muha", userController.getUsers().get(1).getName());
@@ -56,7 +64,8 @@ class UserControllerTest {
     @Test
     void validateBirthdayExceptionTest() {
         final UserController userController = new UserController();
-        final User user = new User(1, "eliseev@bk.ru", "Muha", "Max", LocalDate.of(2025, 10, 25));
+        final User user = new User(1, "eliseev@bk.ru", "Muha", "Max"
+                , LocalDate.of(2025, 10, 25));
         assertThrows(RuntimeException.class, () -> userController.validate(user));
     }
 }

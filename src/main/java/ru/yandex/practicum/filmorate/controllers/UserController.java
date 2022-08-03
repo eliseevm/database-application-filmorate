@@ -17,18 +17,16 @@ import java.util.List;
 @Getter
 @RequestMapping("/users")
 public class UserController {
-   private int id = 1;
-
+    private int id = 1;
     private final HashMap<Integer, User> users = new HashMap<>();
-
 
     @PostMapping()
     public User create(@Valid @RequestBody User user) {
         validate(user);
-        return users.get(id-1);
+        return users.get(id - 1);
     }
 
-    public void validate (User user) {
+    public void validate(User user) {
         if (user.getEmail().isEmpty() || !user.getEmail().contains("@") || user.getLogin().contains(" ")
                 || user.getLogin().isEmpty() || user.getBirthday().isAfter(LocalDate.now())) {
             log.info("Пользователь указал свои параметры с недостатками!");
@@ -45,8 +43,9 @@ public class UserController {
             log.info("В список пользователей добавлен новый пользователь!");
         }
     }
+
     @PutMapping()
-    public User putUsers (@RequestBody User user) {
+    public User putUsers(@RequestBody User user) {
         if ((users.get(user.getId()).equals(null))) {
             users.put(id, user);
             id++;
@@ -61,8 +60,9 @@ public class UserController {
             return oldUser;
         }
     }
+
     @GetMapping()
-    public List<User> getAll () {
+    public List<User> getAll() {
         List<User> userss = new ArrayList<>(users.values());
         System.out.println("55555  " + userss.size());
         return userss;

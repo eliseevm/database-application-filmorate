@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.controllers;
+
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidateFilmException;
@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 
 @RestController
 @Slf4j
@@ -24,7 +23,7 @@ public class FilmController {
     @PostMapping()
     public Film create(@Valid @RequestBody Film film) {
         validate(film);
-        return films.get(id-1);
+        return films.get(id - 1);
     }
 
     public void validate(Film film) {
