@@ -21,16 +21,16 @@ public class FilmController {
     private Integer id = 1;
 
     @PostMapping()
-    public Film create(@Valid @RequestBody Film film) throws ValidateFilmException {
+    public Film create(@Valid @RequestBody Film film) {
         validate(film);
         return films.get(id-1);
     }
 
-    public void validate(Film film) throws ValidateFilmException {
+    public void validate(Film film) {
         if (film.getName().isEmpty() || film.getDescription().length() > 200
                 || film.getReleaseDate().isBefore(checkData) || film.getDuration() <= 0) {
             log.info("Введены не правильные параметры фильма, фильм не сохранен в списке");
-            throw new RuntimeException("Не верные параметры фильма");
+            throw new ValidateFilmException("Не верные параметры фильма");
         } else {
             film.setId(id);
             films.put(id, film);
@@ -43,7 +43,7 @@ public class FilmController {
     public Film update(@Valid @RequestBody Film film) {
         if (film.getId() <= 0) {
             log.info("ID '{}' фильма неправильное", film.getId());
-            throw new RuntimeException("Не верные параметры фильма");
+            throw new ValidateFilmException("Не верные параметры фильма");
         }
         Film oldFilm = films.get(film.getId());
         if (!films.containsKey(film.getId())) {
@@ -53,7 +53,6 @@ public class FilmController {
             oldFilm.setDescription(film.getDescription());
             oldFilm.setName(film.getName());
             oldFilm.setReleaseDate(film.getReleaseDate());
-           // oldFilm.setRate(film.getRate());
             log.info("Изменён фильм с ID '{}' в списке фильмов", film.getId());
         }
         return oldFilm;

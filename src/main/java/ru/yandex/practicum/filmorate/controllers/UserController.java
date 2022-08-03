@@ -64,7 +64,7 @@ public class UserController {
     @GetMapping()
     public List<User> getAll () {
         List<User> userss = new ArrayList<>(users.values());
-        System.out.println(userss);
+        System.out.println("55555  " + userss.size());
         return userss;
     }
 }
