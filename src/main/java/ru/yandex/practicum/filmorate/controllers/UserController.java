@@ -46,7 +46,7 @@ public class UserController {
         }
     }
     @PutMapping()
-    public User putUsers (@Valid @RequestBody User user) {
+    public User putUsers (@RequestBody User user) {
         if ((users.get(user.getId()).equals(null))) {
             users.put(id, user);
             id++;

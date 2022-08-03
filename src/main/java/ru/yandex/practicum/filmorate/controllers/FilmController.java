@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.controllers;
 
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidateFilmException;
@@ -21,7 +20,7 @@ public class FilmController {
     private Integer id = 1;
 
     @PostMapping()
-    public Film create(@Valid @RequestBody Film film) {
+    public Film create(@RequestBody Film film) {
         validate(film);
         return films.get(id-1);
     }
@@ -40,7 +39,7 @@ public class FilmController {
     }
 
     @PutMapping()
-    public Film update(@Valid @RequestBody Film film) {
+    public Film update(@RequestBody Film film) {
         if (film.getId() <= 0) {
             log.info("ID '{}' фильма неправильное", film.getId());
             throw new ValidateFilmException("Не верные параметры фильма");
