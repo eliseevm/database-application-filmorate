@@ -23,7 +23,7 @@ public class UserController {
 
 
     @PostMapping()
-    public User create(@RequestBody User user) {
+    public User create(@Valid @RequestBody User user) {
         validate(user);
         return users.get(id-1);
     }

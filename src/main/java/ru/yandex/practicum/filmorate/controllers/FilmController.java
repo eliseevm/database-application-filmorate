@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.controllers;
-
+import javax.validation.Valid;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.ValidateFilmException;
@@ -20,7 +22,7 @@ public class FilmController {
     private Integer id = 1;
 
     @PostMapping()
-    public Film create(@RequestBody Film film) {
+    public Film create(@Valid @RequestBody Film film) {
         validate(film);
         return films.get(id-1);
     }
