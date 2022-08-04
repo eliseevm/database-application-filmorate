@@ -26,7 +26,7 @@ public class FilmController {
         return films.get(id - 1);
     }
 
-    public void validate(Film film) {
+    private void validate(Film film) {
         if (film.getName().isEmpty() || film.getDescription().length() > 200
                 || film.getReleaseDate().isBefore(checkData) || film.getDuration() <= 0) {
             log.info("Введены не правильные параметры фильма, фильм не сохранен в списке");
@@ -53,7 +53,7 @@ public class FilmController {
             oldFilm.setDescription(film.getDescription());
             oldFilm.setName(film.getName());
             oldFilm.setReleaseDate(film.getReleaseDate());
-            log.info("Изменён фильм с ID '{}' в списке фильмов", film.getId());
+            log.info("Изменён фильм с ID '{}' в списке фильмов.", film.getId());
         }
         return oldFilm;
     }
@@ -61,7 +61,7 @@ public class FilmController {
     @GetMapping()
     public List<Film> getAll() {
         List<Film> filmss = new ArrayList<>(films.values());
-        System.out.println(filmss);
+        log.info("Количество фильмов в списке составляет '{}' фильмов.", filmss);
         return filmss;
     }
 }

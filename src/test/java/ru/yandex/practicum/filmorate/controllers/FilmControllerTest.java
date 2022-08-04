@@ -23,9 +23,9 @@ class FilmControllerTest {
                 , LocalDate.of(1895, 12, 15), 120);
         Film film3 = new Film(0, "Начало", "Фантастика о снах"
                 , LocalDate.of(2018, 12, 15), -5);
-        assertThrows(RuntimeException.class, () -> filmController.validate(film));
-        assertThrows(RuntimeException.class, () -> filmController.validate(film1));
-        assertThrows(RuntimeException.class, () -> filmController.validate(film2));
-        assertThrows(RuntimeException.class, () -> filmController.validate(film3));
+        assertThrows(RuntimeException.class, () -> filmController.create(film));
+        assertThrows(RuntimeException.class, () -> filmController.create(film1));
+        assertThrows(RuntimeException.class, () -> filmController.create(film2));
+        assertThrows(RuntimeException.class, () -> filmController.create(film3));
     }
 }

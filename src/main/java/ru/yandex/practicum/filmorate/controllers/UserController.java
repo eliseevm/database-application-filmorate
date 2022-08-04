@@ -26,7 +26,7 @@ public class UserController {
         return users.get(id - 1);
     }
 
-    public void validate(User user) {
+    private void validate(User user) {
         if (user.getEmail().isEmpty() || !user.getEmail().contains("@") || user.getLogin().contains(" ")
                 || user.getLogin().isEmpty() || user.getBirthday().isAfter(LocalDate.now())) {
             log.info("Пользователь указал свои параметры с недостатками!");
@@ -64,7 +64,7 @@ public class UserController {
     @GetMapping()
     public List<User> getAll() {
         List<User> userss = new ArrayList<>(users.values());
-        System.out.println("55555  " + userss.size());
+        log.info( "Количество пользователей приложения составляет '{}' человек.", userss.size());
         return userss;
     }
 }

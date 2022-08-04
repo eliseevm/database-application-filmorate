@@ -30,8 +30,8 @@ class UserControllerTest {
                 , LocalDate.of(1997, 10, 25));
         final User user1 = new User(null, "Muha", "Max", ""
                 , LocalDate.of(1997, 10, 25));
-        assertThrows(RuntimeException.class, () -> userController.validate(user));
-        assertThrows(RuntimeException.class, () -> userController.validate(user1));
+        assertThrows(RuntimeException.class, () -> userController.create(user));
+        assertThrows(RuntimeException.class, () -> userController.create(user1));
     }
 
     @Test
@@ -43,9 +43,9 @@ class UserControllerTest {
                 , LocalDate.of(1997, 10, 25));
         final User user2 = new User(null, "  ", "Max", "eliseev@bk.ru"
                 , LocalDate.of(1997, 10, 25));
-        assertThrows(RuntimeException.class, () -> userController.validate(user));
-        assertThrows(RuntimeException.class, () -> userController.validate(user1));
-        assertThrows(RuntimeException.class, () -> userController.validate(user2));
+        assertThrows(RuntimeException.class, () -> userController.create(user));
+        assertThrows(RuntimeException.class, () -> userController.create(user1));
+        assertThrows(RuntimeException.class, () -> userController.create(user2));
     }
 
     @Test
@@ -66,6 +66,6 @@ class UserControllerTest {
         final UserController userController = new UserController();
         final User user = new User(1, "eliseev@bk.ru", "Muha", "Max"
                 , LocalDate.of(2025, 10, 25));
-        assertThrows(RuntimeException.class, () -> userController.validate(user));
+        assertThrows(RuntimeException.class, () -> userController.create(user));
     }
 }
