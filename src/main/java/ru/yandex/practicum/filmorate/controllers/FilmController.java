@@ -16,7 +16,7 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/films")
 public class FilmController {
-    private final LocalDate checkData = LocalDate.of(1895, 12, 28);
+    private final static LocalDate CHECK_DATA = LocalDate.of(1895, 12, 28);
     private final HashMap<Integer, Film> films = new HashMap<Integer, Film>();
     private Integer id = 1;
 
@@ -28,8 +28,8 @@ public class FilmController {
 
     private void validate(Film film) {
         if (film.getName().isEmpty() || film.getDescription().length() > 200
-                || film.getReleaseDate().isBefore(checkData) || film.getDuration() <= 0) {
-            log.info("Введены не правильные параметры фильма, фильм не сохранен в списке");
+                || film.getReleaseDate().isBefore(CHECK_DATA) || film.getDuration() <= 0) {
+            log.error("Введены неправильные параметры фильма, фильм не сохранен в списке");
             throw new ValidateFilmException("Не верные параметры фильма");
         } else {
             film.setId(id);
@@ -42,7 +42,7 @@ public class FilmController {
     @PutMapping()
     public Film update(@RequestBody Film film) {
         if (film.getId() <= 0) {
-            log.info("ID '{}' фильма неправильное", film.getId());
+            log.error("ID '{}' фильма неправильное", film.getId());
             throw new ValidateFilmException("Не верные параметры фильма");
         }
         Film oldFilm = films.get(film.getId());
@@ -60,8 +60,8 @@ public class FilmController {
 
     @GetMapping()
     public List<Film> getAll() {
-        List<Film> filmss = new ArrayList<>(films.values());
-        log.info("Количество фильмов в списке составляет '{}' фильмов.", filmss);
-        return filmss;
+        List<Film> filmsList = new ArrayList<>(films.values());
+        log.info("Количество фильмов в списке составляет '{}' фильмов.", filmsList);
+        return filmsList;
     }
 }

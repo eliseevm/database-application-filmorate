@@ -29,7 +29,7 @@ public class UserController {
     private void validate(User user) {
         if (user.getEmail().isEmpty() || !user.getEmail().contains("@") || user.getLogin().contains(" ")
                 || user.getLogin().isEmpty() || user.getBirthday().isAfter(LocalDate.now())) {
-            log.info("Пользователь указал свои параметры с недостатками!");
+            log.error("Пользователь указал свои параметры с недостатками!");
             throw new InvalidUserException("Недостатки при заполнении полей пользователя!");
         } else if (user.getName().isEmpty() || user.getName().equals(" ")) {
             user.setName(user.getLogin());
@@ -63,8 +63,8 @@ public class UserController {
 
     @GetMapping()
     public List<User> getAll() {
-        List<User> userss = new ArrayList<>(users.values());
-        log.info( "Количество пользователей приложения составляет '{}' человек.", userss.size());
-        return userss;
+        List<User> usersList = new ArrayList<>(users.values());
+        log.info( "Количество пользователей приложения составляет '{}' человек.", usersList.size());
+        return usersList;
     }
 }
