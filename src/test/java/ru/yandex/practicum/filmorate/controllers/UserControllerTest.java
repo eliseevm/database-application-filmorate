@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.controllers;
+/*package ru.yandex.practicum.filmorate.controllers;
 
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.exceptions.InvalidUserException;
@@ -68,4 +68,4 @@ class UserControllerTest {
                 , LocalDate.of(2025, 10, 25));
         assertThrows(RuntimeException.class, () -> userController.create(user));
     }
-}
+}*/
