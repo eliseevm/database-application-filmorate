@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @Slf4j
@@ -36,8 +37,27 @@ public class UserController {
        return userService.upDateUsers(user);
     }
 
+    @PutMapping("/{id}/friends/{friendId}")
+    public User addFriend(@RequestParam String id, @RequestParam String friendId) {
+        return userService.addFriend(id, friendId);
+    }
+
     @GetMapping()
     public List<User> getAll() {
         return userService.getAll();
+    }
+
+    @GetMapping("/{id}/friends")
+    public Set<Long> getListFriends(@RequestParam String id) {
+       return userService.getFriends().get(id);
+    }
+
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<Long>getListCommonFriends(@RequestParam String id, @RequestParam String otherId) {
+       return  userService.getListCommonFriends(id, otherId);
+    }
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public User delFromFriend(@RequestParam String id, @RequestParam String friendId) {
+       return userService.delFromFriend(id, friendId);
     }
 }

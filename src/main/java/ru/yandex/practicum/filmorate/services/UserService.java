@@ -13,15 +13,17 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @Slf4j
 public class UserService {
 
     private UserStorage inMemoryUserStorage;
+
     @Autowired
     public UserService(UserStorage inMemoryUserStorage) {
-       this.inMemoryUserStorage = inMemoryUserStorage;
+        this.inMemoryUserStorage = inMemoryUserStorage;
     }
 
     public User validate(User user) {
@@ -35,7 +37,8 @@ public class UserService {
         } else {
             inMemoryUserStorage.getUsers().put(user.getId(), user);
             log.info("В список пользователей добавлен новый пользователь!");
-        } return inMemoryUserStorage.getUsers().get(user.getId());
+        }
+        return inMemoryUserStorage.getUsers().get(user.getId());
     }
 
     public User upDateUsers(User user) {
@@ -55,8 +58,36 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        log.info( "Количество пользователей приложения составляет '{}' человек.",
+        log.info("Количество пользователей приложения составляет '{}' человек.",
                 inMemoryUserStorage.getUsersList().size());
         return inMemoryUserStorage.getUsersList();
+    }
+
+    public HashMap<Integer, Set<Long>> getFriends() {
+        return inMemoryUserStorage.getFriends();
+    }
+
+    public List<Long> getListCommonFriends(String id, String otherId) {
+        List<Long> firstList = new ArrayList<>(inMemoryUserStorage.getFriends().get(Integer.parseInt(id)));
+        List<Long> secondList = new ArrayList<>(inMemoryUserStorage.getFriends().get(Integer.parseInt(otherId)));
+        if (firstList.size() > secondList.size()) {
+            firstList.retainAll(secondList);
+            return firstList;
+        } else {
+            secondList.retainAll(firstList);
+            return secondList;
+        }
+    }
+
+    public User addFriend(String id, String friendId) {
+        log.info("Пользователь с id '{}' добавил в друзья пользователя '{}'",
+                id, inMemoryUserStorage.setFriend(id, friendId));
+        return inMemoryUserStorage.setFriend(id, friendId);
+    }
+
+    public User delFromFriend(String id, String friendId) {
+        log.info("Пользователь с id '{}' удалил из друзей пользователя '{}'",
+                id, inMemoryUserStorage.setFriend(id, friendId));
+        return inMemoryUserStorage.getUsers().get(friendId);
     }
 }
