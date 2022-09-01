@@ -17,8 +17,7 @@ import java.util.List;
 @Service
 @Slf4j
 public class UserService {
-    private final HashMap<Integer, User> users = new HashMap<>();
-    private int id = 0;
+
     private UserStorage inMemoryUserStorage;
     @Autowired
     public UserService(UserStorage inMemoryUserStorage) {
@@ -32,24 +31,20 @@ public class UserService {
             throw new InvalidUserException("Недостатки при заполнении полей пользователя!");
         } else if (user.getName().isEmpty() || user.getName().equals(" ")) {
             user.setName(user.getLogin());
-            user.setId(id);
-            users.put(id, user);
-            id++;
+            inMemoryUserStorage.getUsers().put(user.getId(), user);
         } else {
-            user.setId(id);
-            users.put(id, user);
-            id++;
+            inMemoryUserStorage.getUsers().put(user.getId(), user);
             log.info("В список пользователей добавлен новый пользователь!");
-        } return users.get(id - 1);
+        } return inMemoryUserStorage.getUsers().get(user.getId());
     }
 
     public User upDateUsers(User user) {
-        if ((!users.containsKey(user.getId()))) {
-            users.put(user.getId(), user);
+        if ((!inMemoryUserStorage.getUsers().containsKey(user.getId()))) {
+            inMemoryUserStorage.getUsers().put(user.getId(), user);
             //id++;
-            return users.get(user.getId());
+            return inMemoryUserStorage.getUsers().get(user.getId());
         } else {
-            User oldUser = users.get(user.getId());
+            User oldUser = inMemoryUserStorage.getUsers().get(user.getId());
             oldUser.setName(user.getName());
             oldUser.setBirthday(user.getBirthday());
             oldUser.setEmail(user.getEmail());
@@ -60,8 +55,8 @@ public class UserService {
     }
 
     public List<User> getAll() {
-        List<User> usersList = new ArrayList<>(users.values());
-        log.info( "Количество пользователей приложения составляет '{}' человек.", usersList.size());
-        return usersList;
+        log.info( "Количество пользователей приложения составляет '{}' человек.",
+                inMemoryUserStorage.getUsersList().size());
+        return inMemoryUserStorage.getUsersList();
     }
 }
