@@ -7,31 +7,40 @@ import ru.yandex.practicum.filmorate.storages.interfaces.UserStorage;
 import java.util.*;
 
 @Component
-public class InMemoryUserStorage implements UserStorage {
-    private final HashMap<Integer, User> users = new HashMap<>();
-    private final HashMap<Integer, Set<Long>> friends = new HashMap<>();
-    List<User> usersList = new ArrayList<>(users.values());
+public class  InMemoryUserStorage implements UserStorage {
+    private long id = 0;
+    private final Map<Long, User> users = new HashMap<>();
+    private final Map<Long, Set<Long>> friends = new HashMap<>();
+    List<User> usersList;
 
     @Override
-    public HashMap<Integer, User> getUsers() {
+    public Map<Long, User> getUsers() {
         return users;
     }
 
     @Override
     public List<User>getUsersList() {
+        usersList = new ArrayList<>(users.values());
         return usersList;
     }
 
     @Override
-    public HashMap<Integer, Set<Long>> getFriends() {
+    public Map<Long, Set<Long>> getFriends() {
         return friends;
     }
 
     @Override
-    public User setFriend(String id, String friendId) {
-       Set<Long> userFriends = new HashSet<>();
-       userFriends.add(Long.parseLong(friendId));
-       friends.put(Integer.parseInt(id), userFriends);
-       return users.get(Integer.parseInt(friendId));
+    public void setFriends(Long id, Set<Long> userFriends) {
+       friends.put(id, userFriends);
+    }
+
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Long id) {
+        this.id = id;
     }
 }

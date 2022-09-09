@@ -5,11 +5,14 @@ import ru.yandex.practicum.filmorate.model.User;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public interface UserStorage {
-    HashMap<Integer, User> getUsers();
+    Map<Long, User> getUsers();
     List<User> getUsersList();
-    HashMap<Integer, Set<Long>> getFriends();
-    User setFriend(String id, String friendId);
+    Map<Long, Set<Long>> getFriends();
+    void setFriends(Long id, Set<Long> userFriends);
+    public Long getId();
+    public void setId(Long id);
 }

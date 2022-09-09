@@ -17,7 +17,7 @@ import java.util.Set;
 public class User {
     private InMemoryUserStorage inMemoryUserStorage;
     private Set<Long> frinds;
-    private Integer id;
+    private Long id;
     @NotBlank
     private String login;
     private String name;
