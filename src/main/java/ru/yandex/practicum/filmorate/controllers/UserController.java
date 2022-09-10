@@ -3,17 +3,17 @@ package ru.yandex.practicum.filmorate.controllers;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.InvalidUserException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.services.UserService;
 
 import javax.validation.Valid;
+import javax.validation.ValidationException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @Slf4j
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     // Получаем пользователя по id
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public User getUserById(@PathVariable String id) {
        return userService.getUserById(Long.parseLong(id));
     }
@@ -66,7 +66,7 @@ public class UserController {
 
     // Получаем список общих друзей двух пользователей
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<Long>getListCommonFriends(@RequestParam String id, @PathVariable String otherId) {
+    public List<Long>getListCommonFriends(@PathVariable String id, @PathVariable String otherId) {
        return  userService.getListCommonFriends(Long.parseLong(id), Long.parseLong(otherId));
     }
 
@@ -74,5 +74,16 @@ public class UserController {
     @DeleteMapping("/{id}/friends/{friendId}")
     public User deleteFromFriend(@PathVariable String id, @PathVariable String friendId) {
        return userService.delFromFriend(Long.parseLong(id), Long.parseLong(friendId));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handle(final ValidationException ex) {
+       return Map.of("Произошло исключение", "Пользователь с таким id не найден");
+    }
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handle(final NotFoundException ex) {
+        return Map.of("Произошло исключение", "Пользователь с таким id не найден");
     }
 }

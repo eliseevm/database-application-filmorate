@@ -12,11 +12,12 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 public class Film {
-    private int id;
+    private Long id;
     @NotBlank
     private String name;
     private String description;
     private LocalDate releaseDate;
     private int duration;
     private Set<Long>likes;
+    private Integer rate;
 }
