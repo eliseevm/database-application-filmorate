@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.storages.InMemoryUserStorage;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -16,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class User {
     private InMemoryUserStorage inMemoryUserStorage;
-    private Set<Long> frinds;
+    private Set<Long> friends = new HashSet<>();
     private Long id;
     @NotBlank
     private String login;
@@ -27,6 +28,8 @@ public class User {
     @Autowired
     public User (InMemoryUserStorage inMemoryUserStorage) {
         this.inMemoryUserStorage = inMemoryUserStorage;
-        this.frinds = inMemoryUserStorage.getFriends().get(id);
+    }
+    public void addFriends (Long id) {
+        this.friends.add(id);
     }
 }

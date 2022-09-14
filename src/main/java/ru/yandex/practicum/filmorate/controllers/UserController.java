@@ -60,20 +60,20 @@ public class UserController {
 
     // Получаем список друзей пользователя по id пользователя
     @GetMapping("/{id}/friends")
-    public Set<Long> getListFriends(@PathVariable String id) {
-       return userService.getFriends(Long.parseLong(id));
+    public List<User> getListFriends(@PathVariable String id) {
+      return userService.getFriends(Long.parseLong(id));
     }
 
     // Получаем список общих друзей двух пользователей
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<Long>getListCommonFriends(@PathVariable String id, @PathVariable String otherId) {
-       return  userService.getListCommonFriends(Long.parseLong(id), Long.parseLong(otherId));
+    public Set<Long>getListCommonFriends(@PathVariable String id, @PathVariable String otherId) {
+        return userService.getListCommonFriends(Long.parseLong(id), Long.parseLong(otherId));
     }
 
     // Удоляем пользователя с friendId из списка друзей пользователя с id
     @DeleteMapping("/{id}/friends/{friendId}")
-    public User deleteFromFriend(@PathVariable String id, @PathVariable String friendId) {
-       return userService.delFromFriend(Long.parseLong(id), Long.parseLong(friendId));
+    public void deleteFromFriend(@PathVariable String id, @PathVariable String friendId) {
+        userService.delFromFriend(Long.parseLong(id), Long.parseLong(friendId));
     }
 
     @ExceptionHandler
@@ -83,7 +83,7 @@ public class UserController {
     }
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handle(final NotFoundException ex) {
+    public Map<String, String> handle1(final NotFoundException ex) {
         return Map.of("Произошло исключение", "Пользователь с таким id не найден");
     }
 }

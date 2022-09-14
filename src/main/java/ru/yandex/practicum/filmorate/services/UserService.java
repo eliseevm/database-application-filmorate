@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.services;
 
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,14 +27,15 @@ public class UserService {
     }
 
     public User validate(User user) {
-        if(inMemoryUserStorage.getUsers().containsKey(user.getId())) {
+        if (inMemoryUserStorage.getUsers().containsKey(user.getId())) {
             throw new NotFoundException("Пользователь с таким номером не найден");
         }
         if (user.getEmail() == null || !user.getEmail().contains("@") || user.getLogin().contains(" ")
                 || user.getLogin().isEmpty() || user.getBirthday().isAfter(LocalDate.now())) {
             log.error("Пользователь указал свои параметры с недостатками!");
             throw new ValidationException("Ошибочное заполнение полей пользователя!");
-        } if (user.getName() == null || user.getName().equals(" ") || user.getName().equals("")) {
+        }
+        if (user.getName() == null || user.getName().equals(" ") || user.getName().equals("")) {
             user.setName(user.getLogin());
             user.setId(inMemoryUserStorage.getId());
             inMemoryUserStorage.getUsers().put(user.getId(), user);
@@ -48,7 +50,7 @@ public class UserService {
     }
 
     public User upDateUsers(User user) {
-        if(!inMemoryUserStorage.getUsers().containsKey(user.getId())) {
+        if (!inMemoryUserStorage.getUsers().containsKey(user.getId())) {
             throw new NotFoundException("Пользователь с таким номером не найден");
         }
         if ((!inMemoryUserStorage.getUsers().containsKey(user.getId()))) {
@@ -72,41 +74,56 @@ public class UserService {
         return inMemoryUserStorage.getUsersList();
     }
 
-    public Set<Long> getFriends(Long id) {
-        return inMemoryUserStorage.getFriends().get(id);
+    public List<User> getFriends(Long id) {
+        List<User> users = new ArrayList<>();
+        Set<Long> v = inMemoryUserStorage.getUsers().get(id).getFriends();
+        for(Long user : v) {
+            User us = inMemoryUserStorage.getUsers().get(user);
+            users.add(us);
+        } return users;
     }
 
-    public List<Long> getListCommonFriends(Long id, Long otherId) {
-        if(!inMemoryUserStorage.getFriends().containsKey(id) || !inMemoryUserStorage.getFriends().containsKey(otherId)){
+    public Set<Long> getListCommonFriends(Long id, Long otherId) {
+        if (!inMemoryUserStorage.getUsers().containsKey(id) || !inMemoryUserStorage.getUsers().containsKey(otherId)) {
             throw new NotFoundException("Пользователей с такими id не найдено");
-        }
-        List<Long> firstList = new ArrayList<>(inMemoryUserStorage.getFriends().get(id));
-        List<Long> secondList = new ArrayList<>(inMemoryUserStorage.getFriends().get(otherId));
-        if (firstList.size() > secondList.size()) {
-            firstList.retainAll(secondList);
-            return firstList;
         } else {
-            secondList.retainAll(firstList);
-            return secondList;
+            Set<Long> firstList = inMemoryUserStorage.getUsers().get(id).getFriends();
+            Set<Long> secondList = inMemoryUserStorage.getUsers().get(otherId).getFriends();
+            if (firstList.size() > secondList.size()) {
+                firstList.retainAll(secondList);
+                return firstList;
+            } else {
+                secondList.retainAll(firstList);
+                System.out.println("PRINT ddd" + secondList);
+                return secondList;
+            }
         }
     }
 
     public User addFriend(Long id, Long friendId) {
+        if (!inMemoryUserStorage.getUsers().containsKey(id) || !inMemoryUserStorage.getUsers().containsKey(friendId)) {
+            throw new NotFoundException("Пользователей с такими id не найдено");
+        }
         log.info("Пользователь с id '{}' добавил в друзья пользователя '{}'",
                 id, friendId);
-        Set<Long> userFriends = new HashSet<>();
-        userFriends.add(friendId);
-        inMemoryUserStorage.setFriends(id, userFriends);
-        return inMemoryUserStorage.getUsers().get(friendId);
+        User user1 = inMemoryUserStorage.getUsers().get(id);
+        user1.addFriends(friendId);
+        User user2 = inMemoryUserStorage.getUsers().get(friendId);
+        user2.addFriends(id);
+        return inMemoryUserStorage.getUsers().get(id);
     }
 
-    public User delFromFriend(Long id, Long friendId) {
+    public void delFromFriend(Long id, Long friendId) {
+        Set<Long>friends = inMemoryUserStorage.getUsers().get(id).getFriends();
+        friends.remove(friends);
+        Set<Long>friends1 = inMemoryUserStorage.getUsers().get(friendId).getFriends();
+        friends1.remove(id);
         log.info("Пользователь с id '{}' удалил из друзей пользователя '{}'",
                 id, friendId);
-        return inMemoryUserStorage.getUsers().get(friendId);
     }
+
     public User getUserById(Long id) {
-        if(!inMemoryUserStorage.getUsers().containsKey(id)){
+        if (!inMemoryUserStorage.getUsers().containsKey(id)) {
             throw new NotFoundException("Пользоватеоя с таким id не найдено");
         }
         return inMemoryUserStorage.getUsers().get(id);

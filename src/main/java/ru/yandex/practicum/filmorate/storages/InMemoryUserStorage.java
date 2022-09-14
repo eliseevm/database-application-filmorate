@@ -10,7 +10,7 @@ import java.util.*;
 public class  InMemoryUserStorage implements UserStorage {
     private long id = 1;
     private final Map<Long, User> users = new HashMap<>();
-    private final Map<Long, Set<Long>> friends = new HashMap<>();
+    //private final Map<Long, Set<Long>> friends = new HashMap<>();
     List<User> usersList;
 
     @Override
@@ -24,15 +24,15 @@ public class  InMemoryUserStorage implements UserStorage {
         return usersList;
     }
 
-    @Override
-    public Map<Long, Set<Long>> getFriends() {
-        return friends;
-    }
+   // @Override
+    //public Map<Long, Set<Long>> getFriends() {
+      //  return friends;
+  // }
 
-    @Override
-    public void setFriends(Long id, Set<Long> userFriends) {
-       friends.put(id, userFriends);
-    }
+    //@Override
+    //public void setFriends(Long id, Set<Long> userFriends) {
+    //   friends.put(id, userFriends);
+   // }
 
     @Override
     public Long getId() {
