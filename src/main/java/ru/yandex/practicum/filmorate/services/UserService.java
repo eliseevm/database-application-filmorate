@@ -1,12 +1,8 @@
 package ru.yandex.practicum.filmorate.services;
 
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import ru.yandex.practicum.filmorate.exceptions.InvalidUserException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storages.interfaces.UserStorage;
@@ -46,6 +42,8 @@ public class UserService {
             inMemoryUserStorage.setId(inMemoryUserStorage.getId() + 1);
             log.info("В список пользователей добавлен новый пользователь  с id = '{}' !", user.getId());
         }
+
+        System.out.println("PRINT USER" + user);
         return inMemoryUserStorage.getUsers().get(user.getId());
     }
 
@@ -76,41 +74,57 @@ public class UserService {
 
     public List<User> getFriends(Long id) {
         List<User> users = new ArrayList<>();
-        Set<Long> v = inMemoryUserStorage.getUsers().get(id).getFriends();
+        Set<Long> v = new HashSet<>();
+        v = inMemoryUserStorage.getUsers().get(id).getFriends();
         for(Long user : v) {
             User us = inMemoryUserStorage.getUsers().get(user);
             users.add(us);
         } return users;
     }
 
-    public Set<Long> getListCommonFriends(Long id, Long otherId) {
-        if (!inMemoryUserStorage.getUsers().containsKey(id) || !inMemoryUserStorage.getUsers().containsKey(otherId)) {
+    public Set<User> getListCommonFriends(Long id, Long otherId) {
+       if (!inMemoryUserStorage.getUsers().containsKey(id) || !inMemoryUserStorage.getUsers().containsKey(otherId)) {
             throw new NotFoundException("Пользователей с такими id не найдено");
         } else {
-            Set<Long> firstList = inMemoryUserStorage.getUsers().get(id).getFriends();
-            Set<Long> secondList = inMemoryUserStorage.getUsers().get(otherId).getFriends();
+           List<Long> firstList = new ArrayList<>(inMemoryUserStorage.getUsers().get(id).getFriends());
+           List<Long> secondList = new ArrayList<>(inMemoryUserStorage.getUsers().get(otherId).getFriends());
+            System.out.println("Печатаю первый список до объединения" + firstList);
+            System.out.println("Печатаю второй список до объединения" + secondList);
             if (firstList.size() > secondList.size()) {
+                Set<User> t = new HashSet<>();
                 firstList.retainAll(secondList);
-                return firstList;
+                for(Long idi : firstList){
+                    t.add(inMemoryUserStorage.getUsers().get(idi));
+                }
+                System.out.println("Печатаю первый список после объединения" + firstList);
+                return t;
             } else {
+                Set<User> r = new HashSet<>();
                 secondList.retainAll(firstList);
-                System.out.println("PRINT ddd" + secondList);
-                return secondList;
+                for(Long idi : secondList){
+                  r.add(inMemoryUserStorage.getUsers().get(idi));
+                }
+                System.out.println("Печатаю второй список после объединения" + secondList);
+                return r;
             }
         }
-    }
+   }
 
-    public User addFriend(Long id, Long friendId) {
-        if (!inMemoryUserStorage.getUsers().containsKey(id) || !inMemoryUserStorage.getUsers().containsKey(friendId)) {
+    public void addFriend(Long id, Long friendId) {
+        if (friendId < 0 || !inMemoryUserStorage.getUsers().containsKey(id) || !inMemoryUserStorage.getUsers().containsKey(friendId)) {
             throw new NotFoundException("Пользователей с такими id не найдено");
+        } else {
+            log.info("Пользователь с id '{}' добавил в друзья пользователя '{}'",
+                    id, friendId);
+            User user1 = inMemoryUserStorage.getUsers().get(id);
+            System.out.println("Печатаю входной список друзей для ID=" + id + "...." + user1.getFriends());
+            User user2 = inMemoryUserStorage.getUsers().get(friendId);
+            System.out.println("Печатаю входной список друзейдля ID=" + friendId + "...." + user2.getFriends());
+            user1.addFriends(friendId);
+            System.out.println("Печатаю окончательный список друзей для ID=" + id + "...." + user1.getFriends());
+            user2.addFriends(id);
+            System.out.println("Печатаю окончательный список друзейдля ID=" + friendId + "...." + user2.getFriends());
         }
-        log.info("Пользователь с id '{}' добавил в друзья пользователя '{}'",
-                id, friendId);
-        User user1 = inMemoryUserStorage.getUsers().get(id);
-        user1.addFriends(friendId);
-        User user2 = inMemoryUserStorage.getUsers().get(friendId);
-        user2.addFriends(id);
-        return inMemoryUserStorage.getUsers().get(id);
     }
 
     public void delFromFriend(Long id, Long friendId) {

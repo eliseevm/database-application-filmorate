@@ -13,7 +13,7 @@ import java.util.Set;
 @Component
 public class InMemoryFilmStorage implements FilmStorage {
     private final LocalDate CHECK_DATA = LocalDate.of(1895, 12, 28);
-    private final Map<Long, Film> films = new HashMap<Long, Film>();
+    private final Map<Long, Film> films = new HashMap<>();
     private Long id = 0L;
 @Override
     public LocalDate getCHECK_DATA() {

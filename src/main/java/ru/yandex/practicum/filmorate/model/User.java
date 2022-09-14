@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Getter
+@ToString
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,5 +32,9 @@ public class User {
     }
     public void addFriends (Long id) {
         this.friends.add(id);
+    }
+    public Set<Long> getFriends() {
+        Set<Long> f = new HashSet<>(friends);
+        return f;
     }
 }

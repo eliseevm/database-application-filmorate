@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.yandex.practicum.filmorate.storages.InMemoryFilmStorage;
 
@@ -15,21 +12,22 @@ import java.util.Set;
 @Setter
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Film {
+    private InMemoryFilmStorage inMemoryFilmStorage;
+    private Set<Long>likes = new HashSet<>();
     private Long id;
     @NotBlank
     private String name;
     private String description;
     private LocalDate releaseDate;
     private int duration;
-    private Set<Long>likes = new HashSet<>();
-    private Integer rate;
-    InMemoryFilmStorage inMemoryFilmStorage;
-
+    private Integer rate = 0;
     @Autowired
     public Film(InMemoryFilmStorage inMemoryFilmStorage) {
         this.inMemoryFilmStorage = inMemoryFilmStorage;
     }
+
     public void addLikes(Long id) {
         this.likes.add(id);
     }

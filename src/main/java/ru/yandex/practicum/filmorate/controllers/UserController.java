@@ -5,14 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.InvalidUserException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.services.UserService;
 
 import javax.validation.Valid;
 import javax.validation.ValidationException;
-import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -42,8 +40,8 @@ public class UserController {
 
     // Добавляем друга с friendId в список друзей пользователя с id
     @PutMapping("/{id}/friends/{friendId}")
-    public User addFriend(@PathVariable String id, @PathVariable String friendId) {
-        return userService.addFriend(Long.parseLong(id), Long.parseLong(friendId));
+    public void addFriend(@PathVariable String id, @PathVariable String friendId) {
+        userService.addFriend(Long.parseLong(id), Long.parseLong(friendId));
     }
 
     // Получаем пользователя по id
@@ -66,7 +64,7 @@ public class UserController {
 
     // Получаем список общих друзей двух пользователей
     @GetMapping("/{id}/friends/common/{otherId}")
-    public Set<Long>getListCommonFriends(@PathVariable String id, @PathVariable String otherId) {
+    public Set<User> getListCommonFriends(@PathVariable String id, @PathVariable String otherId) {
         return userService.getListCommonFriends(Long.parseLong(id), Long.parseLong(otherId));
     }
 

@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.exceptions.ValidateFilmException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.services.FilmService;
 
-import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -29,7 +28,7 @@ public class FilmController {
 
     // Добавляем фильм
     @PostMapping()
-    public Film create(@Valid @RequestBody Film film) {
+    public Film create(@RequestBody Film film) {
         return filmService.validate(film);
     }
 
@@ -60,7 +59,7 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<Film> getPopularFilm(@RequestParam(required = false, defaultValue = "1") String count) {
+    public List<Film> getPopularFilm(@RequestParam(required = false, defaultValue = "10") String count) {
         return filmService.getPopularFilm(Integer.parseInt(count));
     }
 
@@ -74,6 +73,12 @@ public class FilmController {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handle1(final NotFoundException ex) {
         return Map.of("Произошло исключение", "Пользователь с таким id не найден");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handle1(final ValidateFilmException ex) {
+        return Map.of("Произошло исключение", "Параметры фильма указаны не верно");
     }
 
 }
