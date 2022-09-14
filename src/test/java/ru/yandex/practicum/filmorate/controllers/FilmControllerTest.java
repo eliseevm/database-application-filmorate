@@ -12,9 +12,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class FilmControllerTest {
     FilmController filmController;
+    Film film;
     @Autowired
-    public FilmControllerTest (FilmController filmController) {
+    public FilmControllerTest (FilmController filmController, Film film) {
         this.filmController = filmController;
+        this.film = film;
     }
 
     @Test
@@ -25,7 +27,7 @@ class FilmControllerTest {
         likes.add(3L);
         likes.add(0L);
        // final FilmController filmController = new FilmController();
-        Film film = new Film(0, "", "Фантастика о снах"
+        Film film = new Film(new <>(0, 1, 2), "", "Фантастика о снах"
                 , LocalDate.of(2018, 12, 15), 120, likes);
         Film film1 = new Film(1, "Начало", "Фантастика о снах вапа ывапввп вапыва вапывап " +
                 "ывапывапбва вавап,ва ываыва,ыва ываыывапыввап" +
