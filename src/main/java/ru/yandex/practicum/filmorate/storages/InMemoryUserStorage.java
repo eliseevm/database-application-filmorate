@@ -11,7 +11,7 @@ public class  InMemoryUserStorage implements UserStorage {
     private long id = 1;
     private final Map<Long, User> users = new HashMap<>();
 
-    List<User> usersList;
+    private List<User> usersList;
 
     @Override
     public Map<Long, User> getUsers() {
@@ -33,5 +33,4 @@ public class  InMemoryUserStorage implements UserStorage {
     public void setId(Long id) {
         this.id = id;
     }
-
 }

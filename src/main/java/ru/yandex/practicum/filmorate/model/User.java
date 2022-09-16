@@ -2,7 +2,6 @@ package ru.yandex.practicum.filmorate.model;
 
 import lombok.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.yandex.practicum.filmorate.services.UserService;
 import ru.yandex.practicum.filmorate.storages.InMemoryUserStorage;
 
 import javax.validation.constraints.Email;
@@ -11,8 +10,9 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter
+
 @ToString
+@Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
@@ -26,15 +26,21 @@ public class User {
     @Email
     private String email;
     private LocalDate birthday;
+
+    // Внедряем зависимость через конструктор.
     @Autowired
-    public User (InMemoryUserStorage inMemoryUserStorage) {
+    public User(InMemoryUserStorage inMemoryUserStorage) {
         this.inMemoryUserStorage = inMemoryUserStorage;
     }
-    public void addFriends (Long id) {
+
+    // Получаем друзей для этого пользователя.
+    public void addFriends(Long id) {
         this.friends.add(id);
     }
+
+    // Отдаем копию списка друзей этого пользователя.
     public Set<Long> getFriends() {
-        Set<Long> f = new HashSet<>(friends);
-        return f;
+        Set<Long> copyList = new HashSet<>(friends);
+        return copyList;
     }
 }
