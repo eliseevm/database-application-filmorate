@@ -24,7 +24,7 @@ public class FilmService {
 
     // Проверяем и добавляем фильм в список фильмов.
     public Film validate(Film film) {
-        if (film.getName() == null || film.getName().equals("") || film.getDescription().length() > 200
+        if (film.getName() == null || ("").equals(film.getName()) || film.getDescription().length() > 200
                 || film.getReleaseDate().isBefore(inMemoryFilmStorage.getCHECK_DATA()) || film.getDuration() <= 0) {
             log.error("При добавлении фильма, ведены не правильные параметры фильма, фильм не добавлен. ");
             throw new ValidateFilmException("Не верные параметры фильма, фильм не добавлен. ");
@@ -38,9 +38,11 @@ public class FilmService {
 
     // Обновляем параметры фильма.
     public Film update(Film film) {
-        if (film.getId() < 0 || film.equals(null) || !inMemoryFilmStorage.getFilms().containsKey(film.getId())) {
+        if (film.getId() < 0 || !inMemoryFilmStorage.getFilms().containsKey(film.getId())) {
             log.error("ID '{}' фильма неправильное или не существует. ", film.getId());
             throw new NotFoundException("Фильм с id = " + film.getId() + " не найден. ");
+        } else if (film == null) {
+            throw new RuntimeException("Ошибка пользователя, не введен фильм");
         } else if (inMemoryFilmStorage.getFilms().containsKey(film.getId())) {
             inMemoryFilmStorage.getFilms().put(film.getId(), film);
             log.info("Фильм с id = " + film.getId() + " успешно обновлен. ");

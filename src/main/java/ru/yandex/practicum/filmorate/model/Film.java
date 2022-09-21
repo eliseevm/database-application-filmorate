@@ -15,7 +15,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Film {
-    private InMemoryFilmStorage inMemoryFilmStorage;
     private Set<Long> likes = new HashSet<>();
     private Long id;
     @NotBlank
@@ -25,19 +24,13 @@ public class Film {
     private int duration;
     private Integer rate = 0;
 
-    // Внедрение зависимости inMemoryFilmStorage через конструктор
-    @Autowired
-    public Film(InMemoryFilmStorage inMemoryFilmStorage) {
-        this.inMemoryFilmStorage = inMemoryFilmStorage;
-    }
-
     // Добавляем лайк к фильму с id
     public void addLikes(Long id) {
         this.likes.add(id);
     }
 
     // Суммируем рейтинг (рейтмнг зависит от колличества лайков)
-    public void setRate() {
+   public void setRate() {
         this.rate = rate + 1;
-    }
+   }
 }

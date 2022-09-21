@@ -67,7 +67,6 @@ public class FilmController {
         return filmService.getPopularFilm(Integer.parseInt(count));
     }
 
-    //
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public Map<String, String> handle(final ValidationException ex) {
