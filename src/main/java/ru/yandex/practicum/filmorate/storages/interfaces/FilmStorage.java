@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.Map;
 
 public interface FilmStorage {
-    LocalDate getCHECK_DATA();
+    LocalDate getCheckData();
 
     Long getId();
 

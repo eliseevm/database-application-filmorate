@@ -11,7 +11,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.services.UserService;
 
 import javax.validation.Valid;
-import javax.validation.ValidationException;
 import java.util.*;
 
 @RestController
@@ -20,7 +19,7 @@ import java.util.*;
 @RequestMapping("/users")
 public class UserController {
 
-    UserService userService;
+    private UserService userService;
 
     // Внедряем зависимость userService через конструктор.
     @Autowired
@@ -31,7 +30,7 @@ public class UserController {
     // Добавляем пользователя.
     @PostMapping()
     public User create(@Valid @RequestBody User user) {
-        return userService.validate(user);
+        return userService.addUser(user);
     }
 
     // Обновляем данные пользователя.

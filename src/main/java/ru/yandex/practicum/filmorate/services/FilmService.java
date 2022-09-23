@@ -22,27 +22,36 @@ public class FilmService {
         this.inMemoryFilmStorage = inMemoryFilmStorage;
     }
 
-    // Проверяем и добавляем фильм в список фильмов.
-    public Film validate(Film film) {
-        if (film.getName() == null || ("").equals(film.getName()) || film.getDescription().length() > 200
-                || film.getReleaseDate().isBefore(inMemoryFilmStorage.getCHECK_DATA()) || film.getDuration() <= 0) {
-            log.error("При добавлении фильма, ведены не правильные параметры фильма, фильм не добавлен. ");
-            throw new ValidateFilmException("Не верные параметры фильма, фильм не добавлен. ");
-        } else {
+    // Добавляем фильм в список
+    public Film addFilm(Film film) {
+        boolean validate = validateFilParameter(film);
+        if (validate) {
             film.setId(inMemoryFilmStorage.getId());
             inMemoryFilmStorage.getFilms().put(film.getId(), film);
             log.info("В список фильмов добавлен новый фильм с id '{}'. ", film.getId());
+            return inMemoryFilmStorage.getFilms().get(film.getId());
         }
-        return inMemoryFilmStorage.getFilms().get(film.getId());
+        return film;
+    }
+
+    // Проверяем параметры филма.
+    public boolean validateFilParameter(Film film) {
+        boolean result = true;
+        if (film.getName() == null || ("").equals(film.getName()) || film.getDescription().length() > 200
+                || film.getReleaseDate().isBefore(inMemoryFilmStorage.getCheckData()) || film.getDuration() <= 0) {
+            log.error("При добавлении фильма, ведены не правильные параметры фильма, фильм не добавлен. ");
+            throw new ValidateFilmException("Не верные параметры фильма, фильм не добавлен. ");
+        }
+        return result;
     }
 
     // Обновляем параметры фильма.
     public Film update(Film film) {
-        if (film.getId() < 0 || !inMemoryFilmStorage.getFilms().containsKey(film.getId())) {
+        if (film == null) {
+            throw new RuntimeException("Ошибка пользователя, не введен фильм");
+        } else if (film.getId() < 0 || !inMemoryFilmStorage.getFilms().containsKey(film.getId())) {
             log.error("ID '{}' фильма неправильное или не существует. ", film.getId());
             throw new NotFoundException("Фильм с id = " + film.getId() + " не найден. ");
-        } else if (film == null) {
-            throw new RuntimeException("Ошибка пользователя, не введен фильм");
         } else if (inMemoryFilmStorage.getFilms().containsKey(film.getId())) {
             inMemoryFilmStorage.getFilms().put(film.getId(), film);
             log.info("Фильм с id = " + film.getId() + " успешно обновлен. ");
@@ -104,7 +113,8 @@ public class FilmService {
             log.error("Фильма с указанным id = '{}' нет в списке", id);
             throw new NotFoundException("Такого фильма нет");
         } else {
-            log.info("Лайк от пользователя с userId = '{}' оставленный для фильма с id = '{}', успешно удален", userId, id);
+            log.info("Лайк от пользователя с userId = '{}' " +
+                    "оставленный для фильма с id = '{}', успешно удален", userId, id);
             inMemoryFilmStorage.getFilms().get(id).getLikes().remove(userId);
             return userId;
         }

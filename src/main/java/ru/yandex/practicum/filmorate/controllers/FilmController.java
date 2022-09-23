@@ -28,7 +28,7 @@ public class FilmController {
     // Добавляем фильм.
     @PostMapping()
     public Film create(@RequestBody Film film) {
-        return filmService.validate(film);
+        return filmService.addFilm(film);
     }
 
     // Обновление сведений о фильме.

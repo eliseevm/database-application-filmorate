@@ -8,7 +8,6 @@ import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storages.interfaces.UserStorage;
 
-import javax.validation.ValidationException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -24,30 +23,42 @@ public class UserService {
         this.inMemoryUserStorage = inMemoryUserStorage;
     }
 
-    // Проверяем параметры пользователя и вносим в список фильмов.
-    public User validate(User user) {
-        if (inMemoryUserStorage.getUsers().containsKey(user.getId())) {
-            log.error("Пользователь с таким номером не найден ");
-            throw new NotFoundException("Пользователь с таким номером не найден ");
-        }
-        if (user.getEmail() == null || !user.getEmail().contains("@") || user.getLogin().contains(" ")
-                || user.getLogin().isEmpty() || user.getBirthday().isAfter(LocalDate.now())) {
-            log.error("Пользователь указал свои параметры с недостатками! ");
-            throw new InvalidUserException("Ошибочное заполнение полей пользователя! ");
-        }
-        if (user.getName() == null || user.getName().equals(" ") || user.getName().equals("")) {
-            user.setName(user.getLogin());
-            user.setId(inMemoryUserStorage.getId());
-            inMemoryUserStorage.getUsers().put(user.getId(), user);
-            inMemoryUserStorage.setId(inMemoryUserStorage.getId() + 1);
-            log.info("Пользователь с '{}' успешно добавлен ", user.getId());
-        } else {
-            user.setId(inMemoryUserStorage.getId());
-            inMemoryUserStorage.getUsers().put(user.getId(), user);
-            inMemoryUserStorage.setId(inMemoryUserStorage.getId() + 1);
-            log.info("В список пользователей добавлен новый пользователь  с id = '{}' ! ", user.getId());
+    // Добавляем пользователя в список.
+    public User addUser(User user) {
+        boolean validate = validateUserParameter(user);
+        if (validate) {
+            if (user.getName() == null || user.getName().equals(" ") || user.getName().equals("")) {
+                user.setName(user.getLogin());
+                user.setId(inMemoryUserStorage.getId());
+                inMemoryUserStorage.getUsers().put(user.getId(), user);
+                inMemoryUserStorage.setId(inMemoryUserStorage.getId() + 1);
+                log.info("Пользователь с '{}' успешно добавлен ", user.getId());
+            } else {
+                user.setId(inMemoryUserStorage.getId());
+                inMemoryUserStorage.getUsers().put(user.getId(), user);
+                inMemoryUserStorage.setId(inMemoryUserStorage.getId() + 1);
+                log.info("В список пользователей добавлен новый пользователь  с id = '{}' ! ", user.getId());
+            }
         }
         return inMemoryUserStorage.getUsers().get(user.getId());
+    }
+
+    // Проверяем параметры пользователя.
+    private boolean validateUserParameter(User user) {
+        boolean result;
+        if (inMemoryUserStorage.getUsers().containsKey(user.getId())) {
+            result = false;
+            log.error("Пользователь с таким номером не найден ");
+            throw new NotFoundException("Пользователь с таким номером не найден ");
+        } else if (user.getEmail() == null || !user.getEmail().contains("@") || user.getLogin().contains(" ")
+                || user.getLogin().isEmpty() || user.getBirthday().isAfter(LocalDate.now())) {
+            result = false;
+            log.error("Пользователь указал свои параметры с недостатками! ");
+            throw new InvalidUserException("Ошибочное заполнение полей пользователя! ");
+        } else {
+            result = true;
+        }
+        return result;
     }
 
     // Обновление параметров пользователя.
@@ -104,7 +115,7 @@ public class UserService {
                 for (Long key : firstList) {
                     finalSortList.add(inMemoryUserStorage.getUsers().get(key));
                 }
-                log.info("Получаем список общихдрузей для пользователей '{}' и '{}' ", id, otherId);
+                log.info("Получаем список общих друзей для пользователей '{}' и '{}' ", id, otherId);
                 return finalSortList;
             } else {
                 secondList.retainAll(firstList);
