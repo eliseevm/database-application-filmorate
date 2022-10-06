@@ -2,69 +2,88 @@ package ru.yandex.practicum.filmorate.controllers;
 
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exceptions.InvalidUserException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.services.UserService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @Slf4j
 @Getter
 @RequestMapping("/users")
 public class UserController {
-    private int id = 1;
-    private final HashMap<Integer, User> users = new HashMap<>();
 
+    private UserService userService;
+
+    // Внедряем зависимость userService через конструктор.
+    @Autowired
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
+    // Добавляем пользователя.
     @PostMapping()
     public User create(@Valid @RequestBody User user) {
-        validate(user);
-        return users.get(id - 1);
+        return userService.addUser(user);
     }
 
-    private void validate(User user) {
-        if (user.getEmail().isEmpty() || !user.getEmail().contains("@") || user.getLogin().contains(" ")
-                || user.getLogin().isEmpty() || user.getBirthday().isAfter(LocalDate.now())) {
-            log.error("Пользователь указал свои параметры с недостатками!");
-            throw new InvalidUserException("Недостатки при заполнении полей пользователя!");
-        } else if (user.getName().isEmpty() || user.getName().equals(" ")) {
-            user.setName(user.getLogin());
-            user.setId(id);
-            users.put(id, user);
-            id++;
-        } else {
-            user.setId(id);
-            users.put(id, user);
-            id++;
-            log.info("В список пользователей добавлен новый пользователь!");
-        }
-    }
-
+    // Обновляем данные пользователя.
     @PutMapping()
     public User putUsers(@RequestBody User user) {
-        if ((users.get(user.getId()).equals(null))) {
-            users.put(id, user);
-            id++;
-            return users.get(user.getId());
-        } else {
-            User oldUser = users.get(user.getId());
-            oldUser.setName(user.getName());
-            oldUser.setBirthday(user.getBirthday());
-            oldUser.setEmail(user.getEmail());
-            oldUser.setLogin(user.getLogin());
-            log.info("В списке пользователей изменены данные пользователя с id '{}'", user.getId());
-            return oldUser;
-        }
+        return userService.upDateUsers(user);
     }
 
+    // Добавляем друга с friendId в список друзей пользователя с id.
+    @PutMapping("/{id}/friends/{friendId}")
+    public void addFriend(@PathVariable String id, @PathVariable String friendId) {
+        userService.addFriend(Long.parseLong(id), Long.parseLong(friendId));
+    }
+
+    // Получаем пользователя по id.
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable String id) {
+        return userService.getUserById(Long.parseLong(id));
+    }
+
+    // Получаем список всех пользователей.
     @GetMapping()
     public List<User> getAll() {
-        List<User> usersList = new ArrayList<>(users.values());
-        log.info( "Количество пользователей приложения составляет '{}' человек.", usersList.size());
-        return usersList;
+        return userService.getAll();
+    }
+
+    // Получаем список друзей пользователя по id пользователя.
+    @GetMapping("/{id}/friends")
+    public List<User> getListFriends(@PathVariable String id) {
+        return userService.getFriends(Long.parseLong(id));
+    }
+
+    // Получаем список общих друзей двух пользователей.
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public Set<User> getListCommonFriends(@PathVariable String id, @PathVariable String otherId) {
+        return userService.getListCommonFriends(Long.parseLong(id), Long.parseLong(otherId));
+    }
+
+    // Удоляем пользователя с friendId из списка друзей пользователя с id.
+    @DeleteMapping("/{id}/friends/{friendId}")
+    public void deleteFromFriend(@PathVariable String id, @PathVariable String friendId) {
+        userService.delFromFriend(Long.parseLong(id), Long.parseLong(friendId));
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public Map<String, String> handle(final InvalidUserException ex) {
+        return Map.of("Произошло исключение", "Не правильные параметры запроса.");
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Map<String, String> handle1(final NotFoundException ex) {
+        return Map.of("Произошло исключение", "Искомый объект не найден");
     }
 }
