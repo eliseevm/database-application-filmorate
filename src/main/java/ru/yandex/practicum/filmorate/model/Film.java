@@ -17,6 +17,8 @@ import java.util.Set;
 public class Film {
     private Set<Long> likes = new HashSet<>();
     private Long id;
+    private String genre;
+    private String ageRate;
     @NotBlank
     private String name;
     private String description;

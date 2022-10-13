@@ -20,6 +20,7 @@ public class User {
     private InMemoryUserStorage inMemoryUserStorage;
     private Set<Long> friends = new HashSet<>();
     private Long id;
+    private boolean friendStatus;
     @NotBlank
     private String login;
     private String name;
